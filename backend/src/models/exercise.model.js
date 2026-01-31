@@ -59,6 +59,21 @@ export const getExercisesByUserEquipment = async (userId, muscleGroupId = null) 
   return result.rows;
 };
 
+// Search exercises by name (fuzzy match)
+export const searchExercises = async (query) => {
+  const sql = `
+    SELECT e.*, mg.name as muscle_group_name, et.name as equipment_name
+    FROM exercises e
+    INNER JOIN muscle_groups mg ON e.muscle_group_id = mg.id
+    INNER JOIN equipment_types et ON e.equipment_type_id = et.id
+    WHERE e.name ILIKE $1
+    ORDER BY e.name
+    LIMIT 20
+  `;
+  const result = await pool.query(sql, [`%${query}%`]);
+  return result.rows;
+};
+
 // Get exercise by ID
 export const getExerciseById = async (id) => {
   const query = `

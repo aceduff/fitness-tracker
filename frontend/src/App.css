@@ -302,6 +302,52 @@ body {
   color: #1d4ed8;
 }
 
+/* Search dropdown */
+.search-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 50;
+  list-style: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.search-dropdown li {
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.875rem;
+  transition: background 0.1s;
+}
+.search-dropdown li:hover { background: var(--bg); }
+
+/* Meal type selector */
+.meal-type-bar {
+  display: flex;
+  gap: 0.25rem;
+  margin-bottom: 1rem;
+}
+.meal-type-bar button {
+  flex: 1;
+  padding: 0.4rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card-bg);
+  cursor: pointer;
+  font-size: 0.8rem;
+  text-transform: capitalize;
+  transition: all 0.15s;
+}
+.meal-type-bar button:hover { background: var(--bg); }
+.meal-type-bar button.active { background: var(--primary); color: white; border-color: var(--primary); }
+
 /* Misc */
 .text-muted { color: var(--text-muted); font-size: 0.875rem; }
 .loading { text-align: center; padding: 2rem; color: var(--text-muted); }

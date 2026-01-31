@@ -5,8 +5,7 @@ import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
 import Dashboard from './pages/Dashboard.jsx';
 import AddMeal from './pages/AddMeal.jsx';
-import AddWorkout from './pages/AddWorkout.jsx';
-import WorkoutLog from './pages/WorkoutLog.jsx';
+import Workout from './pages/Workout.jsx';
 import Settings from './pages/Settings.jsx';
 
 function ProtectedRoute({ children }) {
@@ -29,8 +28,7 @@ export default function App() {
           <Route path="/register" element={token ? <Navigate to="/" /> : <Register />} />
           <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/add-meal" element={<ProtectedRoute><AddMeal /></ProtectedRoute>} />
-          <Route path="/add-workout" element={<ProtectedRoute><AddWorkout /></ProtectedRoute>} />
-          <Route path="/workout-log" element={<ProtectedRoute><WorkoutLog /></ProtectedRoute>} />
+          <Route path="/workout" element={<ProtectedRoute><Workout /></ProtectedRoute>} />
           <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
         </Routes>
       </main>

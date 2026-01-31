@@ -38,6 +38,7 @@ export const mealValidation = [
   body('carbs').optional().isFloat({ min: 0 }).withMessage('Carbs must be a positive number'),
   body('fat').optional().isFloat({ min: 0 }).withMessage('Fat must be a positive number'),
   body('servings').optional().isFloat({ min: 0.1 }).withMessage('Servings must be greater than 0'),
+  body('meal_type').optional().isIn(['breakfast', 'lunch', 'dinner', 'snack']).withMessage('Meal type must be breakfast, lunch, dinner, or snack'),
   body('date').isDate().withMessage('Valid date is required (YYYY-MM-DD)')
 ];
 

@@ -1,27 +1,27 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import BarcodeScanner from '../components/BarcodeScanner.jsx';
 import * as api from '../api.js';
 
+const MEAL_TYPES = ['breakfast', 'lunch', 'dinner', 'snack'];
+
 export default function AddMeal() {
-  const navigate = useNavigate();
   const today = new Date().toISOString().split('T')[0];
-  const [mode, setMode] = useState('manual'); // 'manual' or 'barcode'
+  const [mode, setMode] = useState('manual');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Manual entry state
   const [name, setName] = useState('');
   const [calories, setCalories] = useState('');
   const [protein, setProtein] = useState('');
   const [carbs, setCarbs] = useState('');
   const [fat, setFat] = useState('');
+  const [mealType, setMealType] = useState('snack');
   const [date, setDate] = useState(today);
 
-  // Barcode state
   const [scannedProduct, setScannedProduct] = useState(null);
   const [servings, setServings] = useState(1);
+  const [barcodeMealType, setBarcodeMealType] = useState('snack');
   const [scannerError, setScannerError] = useState('');
 
   async function handleManualSubmit(e) {
@@ -35,6 +35,7 @@ export default function AddMeal() {
         protein: protein ? parseFloat(protein) : undefined,
         carbs: carbs ? parseFloat(carbs) : undefined,
         fat: fat ? parseFloat(fat) : undefined,
+        meal_type: mealType,
         servings: 1,
         date
       });
@@ -80,6 +81,7 @@ export default function AddMeal() {
         fat: Math.round(scannedProduct.fat * servings * 10) / 10,
         serving_size: scannedProduct.serving_size,
         servings,
+        meal_type: barcodeMealType,
         date
       });
       setSuccess('Meal added from barcode!');
@@ -116,6 +118,21 @@ export default function AddMeal() {
 
       {mode === 'manual' && (
         <form onSubmit={handleManualSubmit} className="card">
+          <div className="form-group">
+            <label>Meal Type</label>
+            <div className="meal-type-bar">
+              {MEAL_TYPES.map(t => (
+                <button
+                  key={t}
+                  type="button"
+                  className={`tab ${mealType === t ? 'active' : ''}`}
+                  onClick={() => setMealType(t)}
+                >
+                  {t.charAt(0).toUpperCase() + t.slice(1)}
+                </button>
+              ))}
+            </div>
+          </div>
           <div className="form-group">
             <label>Food Name *</label>
             <input value={name} onChange={e => setName(e.target.value)} required />
@@ -164,6 +181,22 @@ export default function AddMeal() {
           <h3>{scannedProduct.name}</h3>
           {scannedProduct.brand && <p className="text-muted">{scannedProduct.brand}</p>}
           {scannedProduct.serving_size && <p className="text-muted">Serving: {scannedProduct.serving_size}</p>}
+
+          <div className="form-group">
+            <label>Meal Type</label>
+            <div className="meal-type-bar">
+              {MEAL_TYPES.map(t => (
+                <button
+                  key={t}
+                  type="button"
+                  className={`tab ${barcodeMealType === t ? 'active' : ''}`}
+                  onClick={() => setBarcodeMealType(t)}
+                >
+                  {t.charAt(0).toUpperCase() + t.slice(1)}
+                </button>
+              ))}
+            </div>
+          </div>
 
           <div className="form-group">
             <label>Number of Servings</label>

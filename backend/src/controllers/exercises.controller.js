@@ -2,10 +2,25 @@ import {
   getAllExercises,
   getExercisesByMuscleGroup,
   getExercisesByEquipment,
-  getExercisesByUserEquipment
+  getExercisesByUserEquipment,
+  searchExercises
 } from '../models/exercise.model.js';
 import { getAllMuscleGroups } from '../models/muscleGroup.model.js';
 import { getAllEquipmentTypes, getUserEquipment, setUserEquipment } from '../models/equipment.model.js';
+
+// Search exercises by name
+export const searchExercisesByName = async (req, res, next) => {
+  try {
+    const { q } = req.query;
+    if (!q || q.length < 1) {
+      return res.json({ success: true, exercises: [] });
+    }
+    const exercises = await searchExercises(q);
+    res.json({ success: true, exercises });
+  } catch (error) {
+    next(error);
+  }
+};
 
 // Get all exercises with optional filters
 export const getExercises = async (req, res, next) => {

@@ -53,6 +53,7 @@ export const getExercises = (params = {}) => {
   const query = new URLSearchParams(params).toString();
   return request(`/exercises?${query}`);
 };
+export const searchExercises = (q) => request(`/exercises/search?q=${encodeURIComponent(q)}`);
 export const getMuscleGroups = () => request('/exercises/muscle-groups');
 export const getEquipmentTypes = () => request('/exercises/equipment-types');
 export const getMyEquipment = () => request('/exercises/my-equipment');

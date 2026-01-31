@@ -34,6 +34,7 @@ CREATE TABLE meals (
     fat DECIMAL(5,2),
     serving_size VARCHAR(100),
     servings DECIMAL(5,2) DEFAULT 1,
+    meal_type VARCHAR(20) DEFAULT 'snack',
     date DATE NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

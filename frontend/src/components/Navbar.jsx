@@ -16,8 +16,7 @@ export default function Navbar() {
       <div className="nav-links">
         <NavLink to="/" end>Dashboard</NavLink>
         <NavLink to="/add-meal">Meals</NavLink>
-        <NavLink to="/add-workout">Workout</NavLink>
-        <NavLink to="/workout-log">Log</NavLink>
+        <NavLink to="/workout">Workout</NavLink>
         <NavLink to="/settings">Settings</NavLink>
       </div>
       <div className="nav-user">

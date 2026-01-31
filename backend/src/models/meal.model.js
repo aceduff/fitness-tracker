@@ -2,11 +2,11 @@ import pool from '../config/database.js';
 
 // Create new meal
 export const createMeal = async (mealData) => {
-  const { user_id, name, calories, protein, carbs, fat, serving_size, servings, date } = mealData;
+  const { user_id, name, calories, protein, carbs, fat, serving_size, servings, meal_type, date } = mealData;
 
   const query = `
-    INSERT INTO meals (user_id, name, calories, protein, carbs, fat, serving_size, servings, date)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    INSERT INTO meals (user_id, name, calories, protein, carbs, fat, serving_size, servings, meal_type, date)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
     RETURNING *
   `;
 
@@ -19,6 +19,7 @@ export const createMeal = async (mealData) => {
     fat || null,
     serving_size || null,
     servings || 1,
+    meal_type || 'snack',
     date
   ]);
 

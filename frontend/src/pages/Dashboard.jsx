@@ -118,7 +118,7 @@ export default function Dashboard() {
                 <li key={m.id} className="entry-item">
                   <div className="entry-info">
                     <strong>{m.name}</strong>
-                    <span>{m.calories} cal</span>
+                    <span>{m.calories} cal{m.meal_type ? ` · ${m.meal_type}` : ''}</span>
                   </div>
                   <button onClick={() => handleDeleteMeal(m.id)} className="btn btn-sm btn-danger">X</button>
                 </li>

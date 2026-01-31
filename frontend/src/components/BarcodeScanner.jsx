@@ -48,17 +48,14 @@ export default function BarcodeScanner({ onScan, onError }) {
       });
       html5QrCodeRef.current = scanner;
 
+      // Pass camera ID directly - do NOT pass videoConstraints.facingMode
+      // as it overrides the specific camera selection
       await scanner.start(
         camToUse,
         {
           fps: 15,
           qrbox: { width: 300, height: 200 },
-          disableFlip: false,
-          videoConstraints: {
-            facingMode: 'environment',
-            width: { ideal: 1920 },
-            height: { ideal: 1080 }
-          }
+          disableFlip: false
         },
         (decodedText) => {
           stopScanner();
@@ -82,7 +79,10 @@ export default function BarcodeScanner({ onScan, onError }) {
   async function stopScanner() {
     if (html5QrCodeRef.current) {
       try {
-        await html5QrCodeRef.current.stop();
+        const state = html5QrCodeRef.current.getState();
+        if (state === 2) { // SCANNING
+          await html5QrCodeRef.current.stop();
+        }
         html5QrCodeRef.current.clear();
       } catch {}
       html5QrCodeRef.current = null;
@@ -106,8 +106,18 @@ export default function BarcodeScanner({ onScan, onError }) {
     }
   }
 
+  // Cleanup on unmount (handles page navigation)
   useEffect(() => {
-    return () => { stopScanner(); };
+    return () => {
+      if (html5QrCodeRef.current) {
+        try {
+          html5QrCodeRef.current.stop().then(() => {
+            html5QrCodeRef.current?.clear();
+          }).catch(() => {});
+        } catch {}
+        html5QrCodeRef.current = null;
+      }
+    };
   }, []);
 
   return (

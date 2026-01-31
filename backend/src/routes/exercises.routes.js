@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import {
   getExercises,
+  searchExercisesByName,
   getMuscleGroups,
   getEquipmentTypes,
   getMyEquipment,
@@ -12,6 +13,7 @@ const router = Router();
 
 router.use(authMiddleware);
 
+router.get('/search', searchExercisesByName);
 router.get('/', getExercises);
 router.get('/muscle-groups', getMuscleGroups);
 router.get('/equipment-types', getEquipmentTypes);
