@@ -5,7 +5,7 @@ export const createUser = async (username, passwordHash) => {
   const query = `
     INSERT INTO users (username, password_hash)
     VALUES ($1, $2)
-    RETURNING id, username, bmr, current_weight, goal_weight, initial_weight, created_at
+    RETURNING id, username, bmr, current_weight, goal_weight, created_at
   `;
   const result = await pool.query(query, [username, passwordHash]);
   return result.rows[0];
@@ -21,7 +21,7 @@ export const findUserByUsername = async (username) => {
 // Find user by ID
 export const findUserById = async (userId) => {
   const query = `
-    SELECT id, username, bmr, current_weight, goal_weight, initial_weight, created_at
+    SELECT id, username, bmr, current_weight, goal_weight, created_at
     FROM users
     WHERE id = $1
   `;
@@ -47,11 +47,6 @@ export const updateUserSettings = async (userId, updates) => {
     fields.push(`goal_weight = $${paramIndex++}`);
     values.push(updates.goal_weight);
   }
-  if (updates.initial_weight !== undefined) {
-    fields.push(`initial_weight = $${paramIndex++}`);
-    values.push(updates.initial_weight);
-  }
-
   if (fields.length === 0) {
     return await findUserById(userId);
   }
@@ -61,7 +56,7 @@ export const updateUserSettings = async (userId, updates) => {
     UPDATE users
     SET ${fields.join(', ')}
     WHERE id = $${paramIndex}
-    RETURNING id, username, bmr, current_weight, goal_weight, initial_weight, created_at
+    RETURNING id, username, bmr, current_weight, goal_weight, created_at
   `;
 
   const result = await pool.query(query, values);
