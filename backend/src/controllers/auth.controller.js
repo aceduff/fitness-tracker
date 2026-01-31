@@ -24,7 +24,11 @@ export const register = async (req, res, next) => {
     const user = await createUser(username, passwordHash);
 
     // Add all equipment types to new user by default
-    await addAllEquipmentToUser(user.id);
+    try {
+      await addAllEquipmentToUser(user.id);
+    } catch (e) {
+      console.warn('Could not assign default equipment:', e.message);
+    }
 
     // Generate JWT token
     const token = generateToken(user.id, user.username);
@@ -81,7 +85,6 @@ export const login = async (req, res, next) => {
         bmr: user.bmr,
         current_weight: user.current_weight,
         goal_weight: user.goal_weight,
-        initial_weight: user.initial_weight
       },
       token
     });

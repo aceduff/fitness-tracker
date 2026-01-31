@@ -1,0 +1,15 @@
+{
+  "name": "fitness-tracker",
+  "version": "1.0.0",
+  "description": "Full-stack fitness tracking application",
+  "scripts": {
+    "postinstall": "npm install --prefix backend && npm install --prefix frontend",
+    "build": "npm run postinstall && cd frontend && npm run build",
+    "start": "cd backend && node src/server.js",
+    "dev": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev"
+  },
+  "keywords": ["fitness", "tracker", "workout", "nutrition"],
+  "author": "",
+  "license": "ISC"
+}

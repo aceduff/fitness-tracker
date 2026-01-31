@@ -41,6 +41,13 @@ export const mealValidation = [
   body('date').isDate().withMessage('Valid date is required (YYYY-MM-DD)')
 ];
 
+// Validation rules for adding a simple workout
+export const workoutValidation = [
+  body('name').trim().notEmpty().withMessage('Workout name is required'),
+  body('calories_burned').isInt({ min: 0 }).withMessage('Calories burned must be a positive integer'),
+  body('date').isDate().withMessage('Valid date is required (YYYY-MM-DD)')
+];
+
 // Validation rules for user settings
 export const settingsValidation = [
   body('bmr').optional().isInt({ min: 1000, max: 5000 }).withMessage('BMR must be between 1000 and 5000'),

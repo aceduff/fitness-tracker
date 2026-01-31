@@ -8,6 +8,7 @@ DROP TABLE IF EXISTS user_equipment CASCADE;
 DROP TABLE IF EXISTS exercises CASCADE;
 DROP TABLE IF EXISTS equipment_types CASCADE;
 DROP TABLE IF EXISTS muscle_groups CASCADE;
+DROP TABLE IF EXISTS workouts CASCADE;
 DROP TABLE IF EXISTS meals CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
 
@@ -19,7 +20,6 @@ CREATE TABLE users (
     bmr INTEGER DEFAULT 1800,
     current_weight DECIMAL(5,2),
     goal_weight DECIMAL(5,2),
-    initial_weight DECIMAL(5,2),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -34,6 +34,16 @@ CREATE TABLE meals (
     fat DECIMAL(5,2),
     serving_size VARCHAR(100),
     servings DECIMAL(5,2) DEFAULT 1,
+    date DATE NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create simple Workouts table (quick log: name + calories burned)
+CREATE TABLE workouts (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    name VARCHAR(255) NOT NULL,
+    calories_burned INTEGER NOT NULL,
     date DATE NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -100,6 +110,7 @@ CREATE TABLE exercise_logs (
 
 -- Create indexes for performance
 CREATE INDEX idx_meals_user_date ON meals(user_id, date);
+CREATE INDEX idx_workouts_user_date ON workouts(user_id, date);
 CREATE INDEX idx_workout_sessions_user_date ON workout_sessions(user_id, date);
 CREATE INDEX idx_workout_sessions_status ON workout_sessions(status);
 CREATE INDEX idx_exercise_logs_session ON exercise_logs(workout_session_id);
@@ -131,7 +142,7 @@ INSERT INTO equipment_types (name, icon) VALUES
   ('Kettlebell', 'kettlebell'),
   ('Cable', 'cable');
 
--- Insert Exercises (30+ exercises across all muscle groups)
+-- Insert Exercises
 -- Chest exercises (muscle_group_id = 1)
 INSERT INTO exercises (name, muscle_group_id, equipment_type_id, calories_per_minute, description) VALUES
   ('Push-ups', 1, 1, 7, 'Classic bodyweight chest exercise'),
@@ -189,5 +200,3 @@ INSERT INTO exercises (name, muscle_group_id, equipment_type_id, calories_per_mi
   ('Cable Woodchoppers', 6, 7, 6, 'Diagonal core movement'),
   ('Bicycle Crunches', 6, 1, 6, 'Alternating ab crunches'),
   ('Mountain Climbers', 6, 1, 8, 'Dynamic core cardio');
-
--- Database initialization complete
