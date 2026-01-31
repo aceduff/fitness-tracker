@@ -13,6 +13,7 @@ import userRoutes from './routes/user.routes.js';
 import barcodeRoutes from './routes/barcode.routes.js';
 import exercisesRoutes from './routes/exercises.routes.js';
 import sessionsRoutes from './routes/sessions.routes.js';
+import favoritesRoutes from './routes/favorites.routes.js';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
 import { autoStopInactiveSessions } from './models/workoutSession.model.js';
 
@@ -43,6 +44,7 @@ app.use('/api/user', userRoutes);
 app.use('/api/barcode', barcodeRoutes);
 app.use('/api/exercises', exercisesRoutes);
 app.use('/api/sessions', sessionsRoutes);
+app.use('/api/favorites', favoritesRoutes);
 
 // Serve React frontend in production
 const frontendBuildPath = path.join(__dirname, '../../frontend/dist');

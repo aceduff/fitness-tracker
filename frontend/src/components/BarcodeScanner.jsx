@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { btnPrimary, input, select } from '../styles.js';
 
 export default function BarcodeScanner({ onScan, onError }) {
   const scannerRef = useRef(null);
@@ -48,8 +49,6 @@ export default function BarcodeScanner({ onScan, onError }) {
       });
       html5QrCodeRef.current = scanner;
 
-      // Pass camera ID directly - do NOT pass videoConstraints.facingMode
-      // as it overrides the specific camera selection
       await scanner.start(
         camToUse,
         {
@@ -80,7 +79,7 @@ export default function BarcodeScanner({ onScan, onError }) {
     if (html5QrCodeRef.current) {
       try {
         const state = html5QrCodeRef.current.getState();
-        if (state === 2) { // SCANNING
+        if (state === 2) {
           await html5QrCodeRef.current.stop();
         }
         html5QrCodeRef.current.clear();
@@ -106,7 +105,6 @@ export default function BarcodeScanner({ onScan, onError }) {
     }
   }
 
-  // Cleanup on unmount (handles page navigation)
   useEffect(() => {
     return () => {
       if (html5QrCodeRef.current) {
@@ -121,11 +119,11 @@ export default function BarcodeScanner({ onScan, onError }) {
   }, []);
 
   return (
-    <div className="barcode-scanner">
+    <div className="text-center">
       {cameras.length > 1 && (
-        <div className="form-group" style={{ marginBottom: '0.75rem' }}>
-          <label>Camera</label>
-          <select value={selectedCamera} onChange={handleCameraChange}>
+        <div className="mb-3">
+          <label className="block text-sm font-medium mb-1">Camera</label>
+          <select className={select} value={selectedCamera} onChange={handleCameraChange}>
             {cameras.map(cam => (
               <option key={cam.id} value={cam.id}>{cam.label || `Camera ${cam.id}`}</option>
             ))}
@@ -134,19 +132,20 @@ export default function BarcodeScanner({ onScan, onError }) {
       )}
       <div id="barcode-reader" ref={scannerRef}></div>
       {!scanning ? (
-        <button type="button" onClick={() => startScanner()} className="btn btn-primary">
+        <button type="button" onClick={() => startScanner()} className={btnPrimary}>
           Open Camera to Scan
         </button>
       ) : (
-        <button type="button" onClick={stopScanner} className="btn btn-danger">
+        <button type="button" onClick={stopScanner} className="px-4 py-2 rounded-lg bg-red-600 text-white text-sm font-medium hover:bg-red-700 transition-colors">
           Stop Scanner
         </button>
       )}
-      <p className="scanner-hint">
+      <p className="text-sm text-[var(--palette-text-muted)] mt-2">
         Point your camera at a product barcode, or type the number below
       </p>
-      <form onSubmit={handleManualSubmit} className="manual-barcode">
+      <form onSubmit={handleManualSubmit} className="flex gap-2 mt-3 max-w-[400px] mx-auto">
         <input
+          className={`${input} flex-1`}
           type="text"
           inputMode="numeric"
           pattern="[0-9]*"
@@ -154,7 +153,7 @@ export default function BarcodeScanner({ onScan, onError }) {
           value={manualBarcode}
           onChange={e => setManualBarcode(e.target.value)}
         />
-        <button type="submit" className="btn btn-primary" disabled={!manualBarcode.trim()}>
+        <button type="submit" className={btnPrimary} disabled={!manualBarcode.trim()}>
           Look Up
         </button>
       </form>

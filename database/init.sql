@@ -8,6 +8,7 @@ DROP TABLE IF EXISTS user_equipment CASCADE;
 DROP TABLE IF EXISTS exercises CASCADE;
 DROP TABLE IF EXISTS equipment_types CASCADE;
 DROP TABLE IF EXISTS muscle_groups CASCADE;
+DROP TABLE IF EXISTS favorite_meals CASCADE;
 DROP TABLE IF EXISTS workouts CASCADE;
 DROP TABLE IF EXISTS meals CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
@@ -45,7 +46,22 @@ CREATE TABLE workouts (
     user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     name VARCHAR(255) NOT NULL,
     calories_burned INTEGER NOT NULL,
+    fasted BOOLEAN DEFAULT FALSE,
     date DATE NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create Favorite Meals table
+CREATE TABLE favorite_meals (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    name VARCHAR(255) NOT NULL,
+    calories INTEGER NOT NULL,
+    protein DECIMAL(5,2),
+    carbs DECIMAL(5,2),
+    fat DECIMAL(5,2),
+    serving_size VARCHAR(100),
+    default_servings DECIMAL(5,2) DEFAULT 1,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -119,6 +135,7 @@ CREATE INDEX idx_exercises_muscle_group ON exercises(muscle_group_id);
 CREATE INDEX idx_exercises_equipment ON exercises(equipment_type_id);
 CREATE INDEX idx_user_equipment_user ON user_equipment(user_id);
 CREATE INDEX idx_users_username ON users(username);
+CREATE INDEX idx_favorite_meals_user ON favorite_meals(user_id);
 
 -- ========================================
 -- SEED DATA

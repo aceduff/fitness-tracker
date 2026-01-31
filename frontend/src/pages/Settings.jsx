@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
 import * as api from '../api.js';
+import { card, alertError, alertSuccess, btnPrimary, input } from '../styles.js';
 
 export default function Settings() {
   const { user, updateUser } = useAuth();
@@ -48,44 +49,47 @@ export default function Settings() {
   }
 
   return (
-    <div className="page">
-      <h1>Settings</h1>
-      {error && <div className="alert alert-error">{error}</div>}
-      {success && <div className="alert alert-success">{success}</div>}
+    <div className="animate-[fadeIn_0.2s_ease]">
+      <h1 className="mb-4 text-2xl font-bold">Settings</h1>
+      {error && <div className={alertError}>{error}</div>}
+      {success && <div className={alertSuccess}>{success}</div>}
 
-      <form onSubmit={handleSubmit} className="card">
-        <div className="form-group">
-          <label>BMR (Basal Metabolic Rate)</label>
+      <form onSubmit={handleSubmit} className={card}>
+        <div className="mb-4">
+          <label className="block text-sm font-medium mb-1">BMR (Basal Metabolic Rate)</label>
           <input
             type="number"
             min="1000"
             max="5000"
+            className={input}
             value={bmr}
             onChange={e => setBmr(e.target.value)}
           />
-          <small>Default is 1800 cal/day. This is auto-deducted from your daily calories.</small>
+          <small className="block mt-1 text-[var(--palette-text-muted)] text-xs">Default is 1800 cal/day. This is auto-deducted from your daily calories.</small>
         </div>
-        <div className="form-group">
-          <label>Current Weight (lbs)</label>
+        <div className="mb-4">
+          <label className="block text-sm font-medium mb-1">Current Weight (lbs)</label>
           <input
             type="number"
             min="0"
             step="0.1"
+            className={input}
             value={currentWeight}
             onChange={e => setCurrentWeight(e.target.value)}
           />
         </div>
-        <div className="form-group">
-          <label>Goal Weight (lbs)</label>
+        <div className="mb-4">
+          <label className="block text-sm font-medium mb-1">Goal Weight (lbs)</label>
           <input
             type="number"
             min="0"
             step="0.1"
+            className={input}
             value={goalWeight}
             onChange={e => setGoalWeight(e.target.value)}
           />
         </div>
-        <button type="submit" className="btn btn-primary btn-full" disabled={loading}>
+        <button type="submit" className={`${btnPrimary} w-full`} disabled={loading}>
           {loading ? 'Saving...' : 'Save Settings'}
         </button>
       </form>

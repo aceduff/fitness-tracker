@@ -46,6 +46,7 @@ export const mealValidation = [
 export const workoutValidation = [
   body('name').trim().notEmpty().withMessage('Workout name is required'),
   body('calories_burned').isInt({ min: 0 }).withMessage('Calories burned must be a positive integer'),
+  body('fasted').optional().isBoolean().withMessage('Fasted must be true or false'),
   body('date').isDate().withMessage('Valid date is required (YYYY-MM-DD)')
 ];
 

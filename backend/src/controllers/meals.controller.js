@@ -2,7 +2,9 @@ import {
   createMeal,
   getMealsByDate,
   getMealById,
-  deleteMeal
+  deleteMeal,
+  getRecentMealsWithMacros,
+  getMacrosByDateRange
 } from '../models/meal.model.js';
 
 // Add new meal
@@ -37,6 +39,39 @@ export const getMeals = async (req, res, next) => {
     res.json({
       success: true,
       meals
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Get macro breakdown (last 5 meals + last 7 days)
+export const getMacros = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const [recentMeals, weeklyMacros] = await Promise.all([
+      getRecentMealsWithMacros(userId, 5),
+      getMacrosByDateRange(userId, 7)
+    ]);
+
+    const recentTotals = recentMeals.reduce((acc, m) => ({
+      protein: acc.protein + parseFloat(m.protein || 0),
+      carbs: acc.carbs + parseFloat(m.carbs || 0),
+      fat: acc.fat + parseFloat(m.fat || 0)
+    }), { protein: 0, carbs: 0, fat: 0 });
+
+    res.json({
+      success: true,
+      recent: {
+        protein: Math.round(recentTotals.protein * 10) / 10,
+        carbs: Math.round(recentTotals.carbs * 10) / 10,
+        fat: Math.round(recentTotals.fat * 10) / 10
+      },
+      weekly: {
+        protein: Math.round(parseFloat(weeklyMacros.total_protein) * 10) / 10,
+        carbs: Math.round(parseFloat(weeklyMacros.total_carbs) * 10) / 10,
+        fat: Math.round(parseFloat(weeklyMacros.total_fat) * 10) / 10
+      }
     });
   } catch (error) {
     next(error);

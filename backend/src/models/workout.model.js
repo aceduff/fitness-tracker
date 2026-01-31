@@ -2,13 +2,13 @@ import pool from '../config/database.js';
 
 // Create a simple workout entry
 export const createWorkout = async (workoutData) => {
-  const { user_id, name, calories_burned, date } = workoutData;
+  const { user_id, name, calories_burned, fasted, date } = workoutData;
   const query = `
-    INSERT INTO workouts (user_id, name, calories_burned, date)
-    VALUES ($1, $2, $3, $4)
+    INSERT INTO workouts (user_id, name, calories_burned, fasted, date)
+    VALUES ($1, $2, $3, $4, $5)
     RETURNING *
   `;
-  const result = await pool.query(query, [user_id, name, calories_burned, date]);
+  const result = await pool.query(query, [user_id, name, calories_burned, fasted || false, date]);
   return result.rows[0];
 };
 

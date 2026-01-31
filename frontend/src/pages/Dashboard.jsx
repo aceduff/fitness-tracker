@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import * as api from '../api.js';
+import { card, alertError, btnDanger } from '../styles.js';
 
 export default function Dashboard() {
   const [summary, setSummary] = useState(null);
@@ -43,63 +44,63 @@ export default function Dashboard() {
     }
   }
 
-  if (!summary) return <div className="loading">Loading dashboard...</div>;
+  if (!summary) return <div className="text-center p-8 text-[var(--palette-text-muted)]">Loading dashboard...</div>;
 
   const weightProgress = summary.calories_to_goal
     ? Math.max(0, Math.min(100, 100 - (summary.calories_to_goal / (Math.abs(parseFloat(summary.current_weight) - parseFloat(summary.goal_weight)) * 3500) * 100)))
     : 0;
 
   return (
-    <div className="page dashboard">
-      <h1>Dashboard</h1>
-      {error && <div className="alert alert-error">{error}</div>}
+    <div className="animate-[fadeIn_0.2s_ease]">
+      <h1 className="mb-4 text-2xl font-bold">Dashboard</h1>
+      {error && <div className={alertError}>{error}</div>}
 
-      <div className="card-grid">
-        <div className="card">
-          <h3>Weight Goal</h3>
-          <div className="stat-row">
-            <div className="stat">
-              <span className="stat-label">Current</span>
-              <span className="stat-value">{summary.current_weight ? `${summary.current_weight} lbs` : 'Not set'}</span>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className={card}>
+          <h3 className="mb-3 text-base font-semibold">Weight Goal</h3>
+          <div className="flex gap-8 mb-3">
+            <div className="flex flex-col">
+              <span className="text-xs text-[var(--palette-text-muted)] uppercase">Current</span>
+              <span className="text-xl font-bold">{summary.current_weight ? `${summary.current_weight} lbs` : 'Not set'}</span>
             </div>
-            <div className="stat">
-              <span className="stat-label">Goal</span>
-              <span className="stat-value">{summary.goal_weight ? `${summary.goal_weight} lbs` : 'Not set'}</span>
+            <div className="flex flex-col">
+              <span className="text-xs text-[var(--palette-text-muted)] uppercase">Goal</span>
+              <span className="text-xl font-bold">{summary.goal_weight ? `${summary.goal_weight} lbs` : 'Not set'}</span>
             </div>
           </div>
           {summary.calories_to_goal !== null && (
-            <div className="goal-info">
-              <p>{summary.calories_to_goal > 0
+            <div className="mt-2">
+              <p className="text-sm mb-2">{summary.calories_to_goal > 0
                 ? `${summary.calories_to_goal.toLocaleString()} cal to burn to reach goal`
                 : summary.calories_to_goal < 0
                   ? `${Math.abs(summary.calories_to_goal).toLocaleString()} cal to gain to reach goal`
                   : 'You reached your goal weight!'
               }</p>
-              <div className="progress-bar">
-                <div className="progress-fill" style={{ width: `${weightProgress}%` }}></div>
+              <div className="h-2 bg-[var(--palette-border)] rounded overflow-hidden">
+                <div className="h-full bg-[var(--palette-primary)] rounded progress-fill-transition" style={{ width: `${weightProgress}%` }}></div>
               </div>
             </div>
           )}
         </div>
 
-        <div className="card">
-          <h3>Today's Summary</h3>
-          <div className="summary-breakdown">
-            <div className="summary-line">
+        <div className={card}>
+          <h3 className="mb-3 text-base font-semibold">Today's Summary</h3>
+          <div className="flex flex-col gap-2">
+            <div className="flex justify-between text-sm py-1">
               <span>Calories Eaten</span>
-              <span className="positive">+{summary.calories_eaten}</span>
+              <span className="text-green-600 dark:text-green-400 font-semibold">+{summary.calories_eaten}</span>
             </div>
-            <div className="summary-line">
+            <div className="flex justify-between text-sm py-1">
               <span>Workout Burn</span>
-              <span className="negative">-{summary.calories_burned}</span>
+              <span className="text-red-600 dark:text-red-400 font-semibold">-{summary.calories_burned}</span>
             </div>
-            <div className="summary-line">
+            <div className="flex justify-between text-sm py-1">
               <span>BMR ({summary.bmr})</span>
-              <span className="negative">-{summary.bmr}</span>
+              <span className="text-red-600 dark:text-red-400 font-semibold">-{summary.bmr}</span>
             </div>
-            <div className="summary-line summary-total">
+            <div className="flex justify-between border-t-2 border-[var(--palette-border)] pt-2 font-bold text-base">
               <span>Net Calories</span>
-              <span className={summary.net_calories >= 0 ? 'positive' : 'negative'}>
+              <span className={summary.net_calories >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}>
                 {summary.net_calories >= 0 ? '+' : ''}{summary.net_calories}
               </span>
             </div>
@@ -107,39 +108,39 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div className="card-grid">
-        <div className="card">
-          <h3>Today's Meals ({meals.length})</h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+        <div className={card}>
+          <h3 className="mb-3 text-base font-semibold">Today's Meals ({meals.length})</h3>
           {meals.length === 0 ? (
-            <p className="empty-text">No meals logged today</p>
+            <p className="text-[var(--palette-text-muted)] text-sm">No meals logged today</p>
           ) : (
-            <ul className="entry-list">
+            <ul className="flex flex-col gap-2">
               {meals.map(m => (
-                <li key={m.id} className="entry-item">
-                  <div className="entry-info">
+                <li key={m.id} className="flex items-center justify-between p-2 px-3 border border-[var(--palette-border)] rounded-lg text-sm">
+                  <div className="flex flex-col gap-0.5">
                     <strong>{m.name}</strong>
-                    <span>{m.calories} cal{m.meal_type ? ` · ${m.meal_type}` : ''}</span>
+                    <span className="text-xs text-[var(--palette-text-muted)]">{m.calories} cal{m.meal_type ? ` · ${m.meal_type}` : ''}</span>
                   </div>
-                  <button onClick={() => handleDeleteMeal(m.id)} className="btn btn-sm btn-danger">X</button>
+                  <button onClick={() => handleDeleteMeal(m.id)} className={btnDanger}>X</button>
                 </li>
               ))}
             </ul>
           )}
         </div>
 
-        <div className="card">
-          <h3>Today's Workouts ({workouts.length})</h3>
+        <div className={card}>
+          <h3 className="mb-3 text-base font-semibold">Today's Workouts ({workouts.length})</h3>
           {workouts.length === 0 ? (
-            <p className="empty-text">No workouts logged today</p>
+            <p className="text-[var(--palette-text-muted)] text-sm">No workouts logged today</p>
           ) : (
-            <ul className="entry-list">
+            <ul className="flex flex-col gap-2">
               {workouts.map(w => (
-                <li key={w.id} className="entry-item">
-                  <div className="entry-info">
+                <li key={w.id} className="flex items-center justify-between p-2 px-3 border border-[var(--palette-border)] rounded-lg text-sm">
+                  <div className="flex flex-col gap-0.5">
                     <strong>{w.name}</strong>
-                    <span>{w.calories_burned} cal burned</span>
+                    <span className="text-xs text-[var(--palette-text-muted)]">{w.calories_burned} cal burned</span>
                   </div>
-                  <button onClick={() => handleDeleteWorkout(w.id)} className="btn btn-sm btn-danger">X</button>
+                  <button onClick={() => handleDeleteWorkout(w.id)} className={btnDanger}>X</button>
                 </li>
               ))}
             </ul>

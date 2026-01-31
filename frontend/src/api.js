@@ -37,6 +37,14 @@ export const addMeal = (meal) =>
   request('/meals', { method: 'POST', body: JSON.stringify(meal) });
 export const deleteMeal = (id) =>
   request(`/meals/${id}`, { method: 'DELETE' });
+export const getMacros = () => request('/meals/macros');
+
+// Favorite Meals
+export const getFavorites = () => request('/favorites');
+export const addFavorite = (fav) =>
+  request('/favorites', { method: 'POST', body: JSON.stringify(fav) });
+export const deleteFavorite = (id) =>
+  request(`/favorites/${id}`, { method: 'DELETE' });
 
 // Simple Workouts
 export const getWorkouts = (date) => request(`/workouts?date=${date}`);

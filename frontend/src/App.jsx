@@ -10,19 +10,19 @@ import Settings from './pages/Settings.jsx';
 
 function ProtectedRoute({ children }) {
   const { token, loading } = useAuth();
-  if (loading) return <div className="loading">Loading...</div>;
+  if (loading) return <div className="text-center p-8 text-[var(--palette-text-muted)]">Loading...</div>;
   return token ? children : <Navigate to="/login" />;
 }
 
 export default function App() {
   const { token, loading } = useAuth();
 
-  if (loading) return <div className="loading">Loading...</div>;
+  if (loading) return <div className="text-center p-8 text-[var(--palette-text-muted)]">Loading...</div>;
 
   return (
-    <div className="app">
+    <div className="min-h-screen">
       {token && <Navbar />}
-      <main className="main-content">
+      <main className="max-w-[900px] mx-auto p-4 pb-20">
         <Routes>
           <Route path="/login" element={token ? <Navigate to="/" /> : <Login />} />
           <Route path="/register" element={token ? <Navigate to="/" /> : <Register />} />

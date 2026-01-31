@@ -53,6 +53,33 @@ export const deleteMeal = async (mealId, userId) => {
   return result.rows[0];
 };
 
+// Get last N meals with macros
+export const getRecentMealsWithMacros = async (userId, limit) => {
+  const query = `
+    SELECT name, calories, protein, carbs, fat, date, created_at
+    FROM meals
+    WHERE user_id = $1
+    ORDER BY created_at DESC
+    LIMIT $2
+  `;
+  const result = await pool.query(query, [userId, limit]);
+  return result.rows;
+};
+
+// Get macro totals for last N days
+export const getMacrosByDateRange = async (userId, days) => {
+  const query = `
+    SELECT
+      COALESCE(SUM(protein), 0) as total_protein,
+      COALESCE(SUM(carbs), 0) as total_carbs,
+      COALESCE(SUM(fat), 0) as total_fat
+    FROM meals
+    WHERE user_id = $1 AND date >= CURRENT_DATE - $2::integer + 1
+  `;
+  const result = await pool.query(query, [userId, days]);
+  return result.rows[0];
+};
+
 // Get total calories consumed for a date
 export const getTotalCaloriesByDate = async (userId, date) => {
   const query = `
