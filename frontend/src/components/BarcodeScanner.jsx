@@ -5,6 +5,7 @@ export default function BarcodeScanner({ onScan, onError }) {
   const [scanning, setScanning] = useState(false);
   const [cameras, setCameras] = useState([]);
   const [selectedCamera, setSelectedCamera] = useState('');
+  const [manualBarcode, setManualBarcode] = useState('');
   const html5QrCodeRef = useRef(null);
 
   async function loadCameras() {
@@ -13,7 +14,6 @@ export default function BarcodeScanner({ onScan, onError }) {
       const devices = await Html5Qrcode.getCameras();
       setCameras(devices);
       if (devices.length > 0) {
-        // Default to last camera (usually higher-quality rear camera)
         setSelectedCamera(devices[devices.length - 1].id);
       }
     } catch (err) {
@@ -30,20 +30,35 @@ export default function BarcodeScanner({ onScan, onError }) {
       return;
     }
 
-    // Stop existing scanner if running
     await stopScanner();
 
     try {
-      const { Html5Qrcode } = await import('html5-qrcode');
-      const scanner = new Html5Qrcode('barcode-reader');
+      const { Html5Qrcode, Html5QrcodeSupportedFormats } = await import('html5-qrcode');
+
+      const scanner = new Html5Qrcode('barcode-reader', {
+        formatsToSupport: [
+          Html5QrcodeSupportedFormats.EAN_13,
+          Html5QrcodeSupportedFormats.EAN_8,
+          Html5QrcodeSupportedFormats.UPC_A,
+          Html5QrcodeSupportedFormats.UPC_E,
+          Html5QrcodeSupportedFormats.CODE_128,
+          Html5QrcodeSupportedFormats.CODE_39,
+        ],
+        verbose: false
+      });
       html5QrCodeRef.current = scanner;
 
       await scanner.start(
         camToUse,
         {
-          fps: 10,
-          qrbox: { width: 250, height: 150 },
-          aspectRatio: 1.777
+          fps: 15,
+          qrbox: { width: 300, height: 200 },
+          disableFlip: false,
+          videoConstraints: {
+            facingMode: 'environment',
+            width: { ideal: 1920 },
+            height: { ideal: 1080 }
+          }
         },
         (decodedText) => {
           stopScanner();
@@ -83,6 +98,14 @@ export default function BarcodeScanner({ onScan, onError }) {
     }
   }
 
+  function handleManualSubmit(e) {
+    e.preventDefault();
+    if (manualBarcode.trim()) {
+      onScan(manualBarcode.trim());
+      setManualBarcode('');
+    }
+  }
+
   useEffect(() => {
     return () => { stopScanner(); };
   }, []);
@@ -110,8 +133,21 @@ export default function BarcodeScanner({ onScan, onError }) {
         </button>
       )}
       <p className="scanner-hint">
-        Point your camera at a product barcode
+        Point your camera at a product barcode, or type the number below
       </p>
+      <form onSubmit={handleManualSubmit} className="manual-barcode">
+        <input
+          type="text"
+          inputMode="numeric"
+          pattern="[0-9]*"
+          placeholder="Enter barcode number"
+          value={manualBarcode}
+          onChange={e => setManualBarcode(e.target.value)}
+        />
+        <button type="submit" className="btn btn-primary" disabled={!manualBarcode.trim()}>
+          Look Up
+        </button>
+      </form>
     </div>
   );
 }

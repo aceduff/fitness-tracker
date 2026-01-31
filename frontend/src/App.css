@@ -225,8 +225,23 @@ body {
 
 /* Barcode scanner */
 .barcode-scanner { text-align: center; }
-.barcode-scanner #barcode-reader { margin: 0 auto 1rem; max-width: 400px; }
+.barcode-scanner #barcode-reader { margin: 0 auto 1rem; max-width: 500px; }
 .scanner-hint { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem; }
+.manual-barcode {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.manual-barcode input {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+}
 
 /* Workout log */
 .filter-row {
