@@ -57,7 +57,11 @@ export default function AddMeal() {
       setScannedProduct(data.product);
       setServings(1);
     } catch (err) {
-      setScannerError(err.message);
+      if (err.message === 'Product not found') {
+        setScannerError(`Barcode "${barcode}" was not found in the Open Food Facts database. This product may not be listed. Try a different product or use manual entry.`);
+      } else {
+        setScannerError(err.message);
+      }
     } finally {
       setLoading(false);
     }
